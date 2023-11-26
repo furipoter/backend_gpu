@@ -98,8 +98,9 @@ def video_upload():
         download_url = f'tmp/{file_name}'
         s3.download_file('furiosa-video', f'upload/{file_name}', download_url)
         # video = cv2.VideoCapture(download_url)
+        video_no_audio_url = f'tmp/convert-{file_name}'
 
-        face_blur(download_url, fvideo_no_audio_url)
+        face_blur(download_url, video_no_audio_url)
         print(time.time() - start_time)
         # s3에 convert 한 비디오 업로드
         s3.upload_fileobj(open(video_no_audio_url, 'rb'), 'furiosa-video', f'convert/{file_name}')
