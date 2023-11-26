@@ -10,7 +10,7 @@ from src.db.room import Room
 import time
 
 from models.experimental import attempt_load
-
+import requests
 import torch
 
 from models.experimental import attempt_load
@@ -106,11 +106,16 @@ def video_upload():
         s3.upload_fileobj(open(video_no_audio_url, 'rb'), 'furiosa-video', f'convert/{file_name}')
         convert_url = f'https://furiosa-video.s3.ap-northeast-2.amazonaws.com/convert/{file_name}'
 
+        url = 'http://3.36.4.183:5003/api/video/mp4/' + file_name
+        r = requests.get(url)
+        ffmpeg_url = r.json()['ffmpeg_url']
+
         # update_room_number(file_name)
         return jsonify({
             'message': 'Video converted successfully',
             'convert_url': convert_url,
             'upload_url': upload_url,
+            'ffmpeg_url': ffmpeg_url
         })
     except Exception as e:
         return jsonify({
